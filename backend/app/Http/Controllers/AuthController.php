@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use Dotenv\Exception\ValidationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException as ValidationValidationException;
+// use Illuminate\Validation\ValidationException as ValidationValidationException;
 
 class AuthController extends Controller
 {
@@ -38,10 +39,8 @@ class AuthController extends Controller
          
              // Validate user credentials
              if (!$user || !Hash::check($request->password, $user->password)) {
-                 throw ValidationValidationException::withMessages([
-                     'email' => ['The provided credentials are incorrect.'],
-                 ]);
-             }
+                throw new AuthenticationException('The provided credentials are incorrect.');
+            }
          
              // Create a token for the user
              $token = $user->createToken('laravel')->plainTextToken;
